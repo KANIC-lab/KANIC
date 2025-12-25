@@ -1,3 +1,3 @@
 df
 
-![](images-part/PART-motor-Faulhaber-2338S006.png)
+![image-20251225220329610](images-part/image-20251225220329610.png)
