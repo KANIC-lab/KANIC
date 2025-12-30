@@ -14,7 +14,7 @@
 
 下图为根据实验内容整理的系统结构框图。
 
-![](images-part/EXP-滑模控制-外骨骼.png)
+![](images-exp/EXP-滑模控制-外骨骼.png)
 
 ---
 
@@ -32,7 +32,7 @@
 
 ## 实验数据与现场
 
-![](images-part/EXP-滑模控制-外骨骼2.png)
+![](images-exp/EXP-滑模控制-外骨骼2.png)
 
 ---
 
