@@ -14,7 +14,7 @@
 
 下图为根据实验内容整理的系统结构框图。
 
-![EXP-滑模控制-外骨骼](C:\Users\te\Desktop\ROT旋转类文章\EXP\images-exp\EXP-滑模控制-外骨骼.png)
+![](images-part/EXP-滑模控制-外骨骼.png)
 
 ---
 
@@ -32,7 +32,7 @@
 
 ## 实验数据与现场
 
-![EXP-滑模控制-外骨骼2](C:\Users\te\Desktop\ROT旋转类文章\EXP\images-exp\EXP-滑模控制-外骨骼2.png)
+![](images-part/EXP-滑模控制-外骨骼2.png)
 
 ---
 
