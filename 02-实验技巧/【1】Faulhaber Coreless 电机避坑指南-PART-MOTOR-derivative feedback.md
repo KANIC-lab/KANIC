@@ -1,4 +1,4 @@
-# Faulhaber Coreless 直流电机 2338S006 使用指南
+# Faulhaber Coreless 直流电机 2338S006 使用指南-PART-MOTOR-derivative feedback
 
 在半实物仿真平台和自动化控制实验中，**Faulhaber Coreless 直流电机 2338S006** 因高效率、低电感和快速响应而广受欢迎。然而在调试 **PID 控制** 或微分反馈环节时，不少用户踩过坑，导致电机刷或齿轮箱损坏。
 
@@ -34,5 +34,6 @@ Faulhaber, Coreless 电机, 2338S006, 半实物仿真, PID 控制, 自动化控�
 ## 图片
 
 ![电机1](./images-part/PART-motor-Faulhaber-2338S006.png)
+
 
 
