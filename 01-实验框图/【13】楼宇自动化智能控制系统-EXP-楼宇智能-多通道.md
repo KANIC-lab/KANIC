@@ -67,4 +67,4 @@
 如果你也在做类似实验，相关设备可以租用，我可以帮你调通——直接私信我
 
 📌 更多同类实验案例，涵盖运动控制、振动控制、液压气动等20个方向
-👉 点击查看完整案例目录（https://mp.weixin.qq.com/s/QuxEwVchOgh27426TD7RtA）
+👉 [点击查看完整案例目录](https://mp.weixin.qq.com/s/QuxEwVchOgh27426TD7RtA)
