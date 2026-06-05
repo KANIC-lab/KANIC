@@ -1,0 +1,6 @@
+{
+  "name": "kanic-cases",
+  "scripts": {
+    "build": "python3 build.py"
+  }
+}
