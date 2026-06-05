@@ -1,10 +1,287 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-<title>My Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验案例库 | KANIC.CN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500&display=swap" rel="stylesheet">
+<meta property="og:title" content="自动化实验遇到困难？">
+<meta property="og:description" content="实验案例参考，控制算法验证，实验平台支持">
+<meta property="og:image" content="https://form.kanic.cn/Wechatlogo.png">
+<meta property="og:url" content="https://cases.kanic.cn">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #111;
+    color: #111;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 顶栏 */
+  header {
+    background: #111;
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .nav-link {
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .nav-link:hover { color: #fff; }
+
+  /* 主体：两侧灰色，中间白色内容区 */
+  main {
+    flex: 1;
+    background: #e8e8e8;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1.5rem 3rem;
+  }
+  .content {
+    width: 100%;
+    max-width: 700px;
+    background: #fff;
+    border-top: 3px solid #c0392b;
+    padding: 2rem 2rem 2.5rem;
+  }
+
+  /* 页内标题区 */
+  .page-header {
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 6px;
+  }
+  .page-header p {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.7;
+  }
+
+  /* 卡片列表 */
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: #e5e5e5;
+    border: 1px solid #e5e5e5;
+    margin-bottom: 2rem;
+  }
+  .card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem 1.25rem 1.25rem 1rem;
+    background: #fff;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .card:hover {
+    background: #fafafa;
+    border-left-color: #c0392b;
+  }
+  .card-num {
+    font-size: 20px;
+    font-weight: 500;
+    color: #ddd;
+    min-width: 32px;
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .card:hover .card-num { color: #c0392b; }
+  .card-body { flex: 1; }
+  .card-body h2 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111;
+    margin-bottom: 5px;
+  }
+  .card-body p {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px;
+    color: #999;
+    border: 1px solid #ddd;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .card-arrow {
+    font-size: 16px;
+    color: #ccc;
+    transition: color 0.15s, transform 0.15s;
+    padding-top: 2px;
+  }
+  .card:hover .card-arrow {
+    color: #c0392b;
+    transform: translate(2px, -2px);
+  }
+
+  /* 联系区 */
+  .contact-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e5e5e5;
+  }
+  .contact-bar p { font-size: 13px; color: #666; margin-bottom: 3px; }
+  .contact-bar a.phone {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111;
+    text-decoration: none;
+  }
+  .contact-bar a.phone:hover { color: #c0392b; }
+  .btn {
+    display: inline-block;
+    padding: 9px 20px;
+    background: #c0392b;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #a93226; }
+
+  /* 底栏 */
+  footer {
+    background: #111;
+    color: #666;
+    font-size: 12px;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    flex-shrink: 0;
+  }
+  footer a { color: #888; text-decoration: none; }
+  footer a:hover { color: #fff; }
+
+  @media (max-width: 480px) {
+    main { padding: 1.5rem 0.75rem 2.5rem; }
+    .content { padding: 1.5rem 1.25rem 2rem; }
+    .page-header h1 { font-size: 20px; }
+    .card { padding: 1rem 1rem 1rem 0.75rem; gap: 0.75rem; }
+  }
+</style>
 </head>
 <body>
-<h1>Hello GitHub Pages</h1>
-<p>This is my website.</p>
+
+<header>
+  <a href="https://www.kanic.cn"><img src="https://form.kanic.cn/logo_reverse.png" alt="KANIC.CN" style="height:28px; display:block;"></a>
+  <a class="nav-link" href="https://www.kanic.cn">← 返回主站</a>
+</header>
+
+<main>
+  <div class="content">
+
+    <div class="page-header">
+      <h1>实验案例库</h1>
+      <p>10年半实物仿真（HIL）经验沉淀，涵盖实验框图、调试技巧、软件优化与工程落地，已服务 20+ 高校科研团队。</p>
+    </div>
+
+    <div class="card-list">
+
+      <a class="card" href="/01/">
+        <div class="card-num">01</div>
+        <div class="card-body">
+          <h2>实验框图</h2>
+          <p>从传感器接线到 Simulink 模型初始化，覆盖实验前硬件与软件的完整配置流程。</p>
+          <div class="tags">
+            <span class="tag">Simulink</span>
+            <span class="tag">传感器接线</span>
+            <span class="tag">HIL 搭建</span>
+          </div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <a class="card" href="/02/">
+        <div class="card-num">02</div>
+        <div class="card-body">
+          <h2>实验技巧</h2>
+          <p>常见问题排查、信号噪声处理、采样率调优等实操经验，帮助减少实验中的反复返工。</p>
+          <div class="tags">
+            <span class="tag">调试方法</span>
+            <span class="tag">信号处理</span>
+            <span class="tag">避坑指南</span>
+          </div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <a class="card" href="/03/">
+        <div class="card-num">03</div>
+        <div class="card-body">
+          <h2>软件优化</h2>
+          <p>MATLAB/Simulink 模型精简与实时代码生成优化，提升仿真运行效率与系统稳定性。</p>
+          <div class="tags">
+            <span class="tag">MATLAB</span>
+            <span class="tag">实时代码生成</span>
+            <span class="tag">性能调优</span>
+          </div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+      <a class="card" href="/04/">
+        <div class="card-num">04</div>
+        <div class="card-body">
+          <h2>工程与商业应用</h2>
+          <p>HIL 系统从高校实验室走向实际工程场景的完整案例，含项目背景与交付成果展示。</p>
+          <div class="tags">
+            <span class="tag">HIL</span>
+            <span class="tag">成果转化</span>
+            <span class="tag">落地案例</span>
+          </div>
+        </div>
+        <div class="card-arrow">↗</div>
+      </a>
+
+    </div>
+
+    <div class="contact-bar">
+      <div>
+        <p>有实验问题？随时联系我们</p>
+        <a class="phone" href="tel:13289230494">132-8923-0494</a>
+      </div>
+      <a class="btn" href="https://form.kanic.cn">在线询价 →</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <a href="https://www.kanic.cn">KANIC.CN</a> · 自动化控制实验解决方案
+</footer>
+
 </body>
 </html>
