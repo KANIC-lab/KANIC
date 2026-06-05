@@ -17,20 +17,20 @@ MAIN_URL   = "https://www.kanic.cn"
 FORM_URL   = "https://form.kanic.cn"
 PHONE      = "132-8923-0494"
 PHONE_TEL  = "tel:13289230494"
-OUT_DIR    = "dist"   # 构建输出目录
+OUT_DIR    = "dist"
 
 SECTIONS = [
-    ("01", "01-实验框图",       "实验框图",     "EXP"),
-    ("02", "02-实验技巧",       "实验技巧",     "PART"),
-    ("03", "03-软件优化",       "软件优化",     "SFTW"),
-    ("04", "04-工程与商业应用", "工程与商业应用","APLY"),
+    ("experiment-diagram",    "01-实验框图",       "实验框图",      "EXP"),
+    ("lab-tips",              "02-实验技巧",       "实验技巧",      "PART"),
+    ("software-optimization", "03-软件优化",       "软件优化",      "SFTW"),
+    ("engineering-application","04-工程与商业应用","工程与商业应用","APLY"),
 ]
 
 # ── 简易 Markdown → HTML 转换 ─────────────────────────────────
-def md_to_html(text, base_path=""):
-    """把 Markdown 转成 HTML 片段（支持常见语法）"""
+def md_to_html(text, img_dir=""):
+    """把 Markdown 转成 HTML 片段"""
 
-    # 代码块（先处理，避免内部被其他规则误替换）
+    # 代码块
     def replace_code_block(m):
         lang = m.group(1) or ""
         code = m.group(2).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
@@ -40,14 +40,18 @@ def md_to_html(text, base_path=""):
     # 行内代码
     text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
 
-    # 图片（修正相对路径）
+    # 图片：统一修正为绝对路径 /slug/images-xxx/filename
     def fix_img(m):
         alt, src = m.group(1), m.group(2)
         if src.startswith("http"):
-            pass
-        elif src.startswith("./") or not src.startswith("/"):
-            src = base_path + src.lstrip("./")
-        return f'<img src="{src}" alt="{alt}" style="max-width:100%;border-radius:4px;margin:12px 0;">'
+            return f'<img src="{src}" alt="{alt}" style="max-width:100%;border-radius:4px;margin:12px 0;">'
+        # 取文件名部分
+        filename = src.split("/")[-1].split("\\")[-1]
+        if img_dir:
+            new_src = f"{img_dir}/{filename}"
+        else:
+            new_src = filename
+        return f'<img src="{new_src}" alt="{alt}" style="max-width:100%;border-radius:4px;margin:12px 0;">'
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', fix_img, text)
 
     # 链接
@@ -65,7 +69,7 @@ def md_to_html(text, base_path=""):
     # 水平线
     text = re.sub(r'^---+$', '<hr>', text, flags=re.MULTILINE)
 
-    # 无序列表（简单处理连续行）
+    # 无序列表
     def replace_ul(m):
         items = re.findall(r'^[\*\-]\s+(.+)$', m.group(0), re.MULTILINE)
         lis = "".join(f"<li>{i}</li>" for i in items)
@@ -82,7 +86,7 @@ def md_to_html(text, base_path=""):
     # blockquote
     text = re.sub(r'^>\s+(.+)$', r'<blockquote>\1</blockquote>', text, flags=re.MULTILINE)
 
-    # 段落（空行分隔，跳过已有块级标签的行）
+    # 段落
     block_tags = ('h1','h2','h3','h4','h5','h6','ul','ol','li',
                   'pre','blockquote','hr','img','table')
     lines, buf, out_lines = text.split('\n'), [], []
@@ -134,7 +138,6 @@ main{{flex:1;background:#e8e8e8;display:flex;justify-content:center;padding:2rem
 .content{{width:100%;max-width:700px;background:#fff;border-top:3px solid #c0392b;padding:2rem 2rem 2.5rem}}
 .breadcrumb{{font-size:12px;color:#999;margin-bottom:1.5rem;display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
 .breadcrumb a{{color:#999;text-decoration:none}}.breadcrumb a:hover{{color:#c0392b}}
-/* markdown 内容样式 */
 .md h1{{font-size:22px;font-weight:500;color:#111;margin:0 0 1rem;padding-bottom:.75rem;border-bottom:1px solid #e5e5e5}}
 .md h2{{font-size:17px;font-weight:500;color:#c0392b;margin:1.75rem 0 .75rem;letter-spacing:.04em}}
 .md h3{{font-size:15px;font-weight:500;color:#333;margin:1.25rem 0 .5rem}}
@@ -151,7 +154,6 @@ main{{flex:1;background:#e8e8e8;display:flex;justify-content:center;padding:2rem
 .md hr{{border:none;border-top:1px solid #e5e5e5;margin:1.5rem 0}}
 .md a{{color:#c0392b;text-decoration:none}}.md a:hover{{text-decoration:underline}}
 .md img{{max-width:100%;border-radius:4px;margin:12px 0;display:block}}
-/* 联系栏 */
 .contact-bar{{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding-top:1.5rem;border-top:1px solid #e5e5e5;margin-top:2rem}}
 .contact-bar p{{font-size:13px;color:#666;margin-bottom:3px}}
 .contact-bar a.phone{{font-size:15px;font-weight:500;color:#111;text-decoration:none}}
@@ -188,11 +190,11 @@ footer a{{color:#888;text-decoration:none}}footer a:hover{{color:#fff}}
 
 
 # ── 分类首页（文章列表） ──────────────────────────────────────
-def section_index(num, folder, name, prefix, articles):
+def section_index(slug, name, articles):
     items_html = ""
-    for slug, title in articles:
+    for art_slug, title in articles:
         items_html += f"""
-    <a class="article-item" href="{slug}.html">
+    <a class="article-item" href="{art_slug}.html">
       <span class="article-title">{title}</span>
       <span class="arrow">→</span>
     </a>"""
@@ -209,17 +211,16 @@ def section_index(num, folder, name, prefix, articles):
 .article-list{{display:flex;flex-direction:column;gap:1px;background:#e5e5e5;border:1px solid #e5e5e5;margin-top:1rem}}
 .section-desc{{font-size:14px;color:#666;line-height:1.7;padding:.75rem 0 .25rem;border-bottom:1px solid #e5e5e5;margin-bottom:.25rem}}
 </style>
-<h1>{num}. {name}</h1>
+<h1>{name}</h1>
 <p class="section-desc">共 {len(articles)} 篇文章，点击标题阅读详情。</p>
 <div class="article-list">{items_html}
 </div>"""
 
-    breadcrumb = f'<a href="{SITE_URL}">案例库</a> › <span>{name}</span>'
-    # 上下页导航
-    sec_idx = [s[0] for s in SECTIONS].index(num)
+    sec_idx = [s[0] for s in SECTIONS].index(slug)
     prev_link = (f"{SITE_URL}/{SECTIONS[sec_idx-1][0]}/", SECTIONS[sec_idx-1][2]) if sec_idx > 0 else None
     next_link = (f"{SITE_URL}/{SECTIONS[sec_idx+1][0]}/", SECTIONS[sec_idx+1][2]) if sec_idx < len(SECTIONS)-1 else None
 
+    breadcrumb = f'<a href="{SITE_URL}">案例库</a> › <span>{name}</span>'
     return page_shell(name, breadcrumb, content, prev_link, next_link)
 
 
@@ -229,73 +230,64 @@ def build():
         shutil.rmtree(OUT_DIR)
     os.makedirs(OUT_DIR)
 
-    for num, folder, name, prefix in SECTIONS:
-        sec_out = os.path.join(OUT_DIR, num)
+    for slug, folder, name, prefix in SECTIONS:
+        sec_out = os.path.join(OUT_DIR, slug)
         os.makedirs(sec_out, exist_ok=True)
 
-        # 复制图片文件夹
-        img_folders = [d for d in os.listdir(folder)
-                       if os.path.isdir(os.path.join(folder, d)) and d.startswith("images")]
-        for img_dir in img_folders:
+        # 复制图片文件夹，并记录图片目录名
+        img_dirs = [d for d in os.listdir(folder)
+                    if os.path.isdir(os.path.join(folder, d)) and d.startswith("images")]
+        img_web_path = ""
+        for img_dir in img_dirs:
             src = os.path.join(folder, img_dir)
             dst = os.path.join(sec_out, img_dir)
             if os.path.exists(dst):
                 shutil.rmtree(dst)
             shutil.copytree(src, dst)
+            img_web_path = img_dir  # 相对于该分类页的图片路径
 
-        # 收集文章 .md 文件（排除 README）
+        # 收集文章
         md_files = sorted([
             f for f in os.listdir(folder)
             if f.endswith(".md") and not f.upper().startswith("README")
         ])
 
-        articles = []  # (slug, title)
+        articles = []
         for md_file in md_files:
-            slug = md_file[:-3]  # 去掉 .md
-            # 从文件名提取标题（去掉编号和编号前缀，取【】内容或全名）
-            title = slug
-            m = re.match(r'^\d+[\.\-\s]*[。．]?\s*(.+)', slug)
+            art_slug = md_file[:-3]
+            title = art_slug
+            m = re.match(r'^\d+[\.\-\s]*[。．]?\s*(.+)', art_slug)
             if m:
                 title = m.group(1).strip()
-            # 去掉末尾的 -EXP-xxx / -PART-xxx / -SFTW-xxx / -APLY-xxx 标识
             title = re.sub(r'\s*-(?:EXP|PART|SFTW|APLY)[\w\-]*$', '', title)
-            articles.append((slug, title))
+            articles.append((art_slug, title))
 
-            # 读取 md 内容
             md_path = os.path.join(folder, md_file)
             with open(md_path, encoding="utf-8") as f:
                 raw = f.read()
 
-            # 图片路径前缀（相对于当前 HTML 文件位置）
-            base_path = ""
-            for img_dir in img_folders:
-                base_path = f"{img_dir}/"
-                break
-
-            html_body = md_to_html(raw, base_path)
+            html_body = md_to_html(raw, img_web_path)
             breadcrumb = (
                 f'<a href="{SITE_URL}">案例库</a> › '
-                f'<a href="{SITE_URL}/{num}/">{name}</a> › '
+                f'<a href="{SITE_URL}/{slug}/">{name}</a> › '
                 f'<span>{title}</span>'
             )
 
-            # 文章内上下篇
-            art_idx = articles.index((slug, title))
+            art_idx = len(articles) - 1
             prev_art = (f"{articles[art_idx-1][0]}.html", articles[art_idx-1][1]) if art_idx > 0 else None
-            next_art = None  # 生成时还不知道下一篇，最后补
 
             out_html = page_shell(title, breadcrumb, html_body, prev_art, None)
-            with open(os.path.join(sec_out, f"{slug}.html"), "w", encoding="utf-8") as f:
+            with open(os.path.join(sec_out, f"{art_slug}.html"), "w", encoding="utf-8") as f:
                 f.write(out_html)
 
-        # 生成分类首页 index.html
-        idx_html = section_index(num, folder, name, prefix, articles)
+        # 分类首页
+        idx_html = section_index(slug, name, articles)
         with open(os.path.join(sec_out, "index.html"), "w", encoding="utf-8") as f:
             f.write(idx_html)
 
-        print(f"✓ {num} {name}：{len(articles)} 篇文章")
+        print(f"✓ {slug} ({name})：{len(articles)} 篇文章")
 
-    # 复制主页
+    # 主页
     if os.path.exists("index.html"):
         shutil.copy("index.html", os.path.join(OUT_DIR, "index.html"))
         print("✓ 主页 index.html")
