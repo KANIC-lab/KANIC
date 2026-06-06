@@ -182,7 +182,7 @@ footer a{{color:#888;text-decoration:none}}footer a:hover{{color:#fff}}
       <p>有实验问题？随时联系我们</p>
       <a class="phone" href="{PHONE_TEL}">{PHONE}</a>
     </div>
-    <a class="btn" href="{FORM_URL}">在线询价 →</a>
+    <a class="btn" href="{FORM_URL}">获取方案 →</a>
   </div>
 </div></main>
 <footer><a href="{MAIN_URL}">KANIC.CN</a> · 自动化控制实验解决方案</footer>
